@@ -27,10 +27,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Rebuild Fase Extra site
+      - name: Rebuild and validate Fase Extra site
         run: |
           mkdir -p _site
           cat fase-extra/source/part-*.b64 | base64 --decode | tar -xJf - -C _site --strip-components=1
@@ -38,6 +35,10 @@ jobs:
           # Prefer the Ocarina of Time gameplay thumbnail hosted by YouTube's image CDN.
           sed -i 's#https://zeldauniverse.net/wp-content/uploads/2018/11/Hyrule-Field-Poe.png#https://i.ytimg.com/vi/Wlb__mo-ai0/maxresdefault.jpg#g' _site/index.html _site/explore.html
           sed -i 's#https://zeldauniverse.net/2018/11/21/tingles-maps-hyrule-field-ocarina-of-time/#https://www.youtube.com/watch?v=Wlb__mo-ai0#g' _site/explore.html
+          grep -Fq 'https://i.ytimg.com/vi/Wlb__mo-ai0/maxresdefault.jpg' _site/explore.html
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
